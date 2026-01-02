@@ -1,0 +1,2332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="LifeTrack">
+    <meta name="theme-color" content="#0a0a0f">
+    <title>LifeTrack | Personal Performance Tracker</title>
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%2310b981' width='100' height='100' rx='20'/><text x='50' y='65' font-size='50' text-anchor='middle' fill='white'>📊</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #1a1a24;
+            --bg-hover: #22222e;
+            --bg-input: #1e1e2a;
+            --accent-green: #10b981;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-orange: #f59e0b;
+            --accent-pink: #ec4899;
+            --accent-red: #ef4444;
+            --accent-cyan: #06b6d4;
+            --accent-yellow: #eab308;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: #2a2a3a;
+            --border-light: #3a3a4a;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --gradient-1: linear-gradient(135deg, #10b981, #3b82f6);
+            --gradient-2: linear-gradient(135deg, #8b5cf6, #ec4899);
+            --shadow: 0 4px 20px rgba(0,0,0,0.3);
+            --radius: 12px;
+            --radius-lg: 16px;
+            --safe-top: env(safe-area-inset-top);
+            --safe-bottom: env(safe-area-inset-bottom);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html, body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .app {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding-top: var(--safe-top);
+            padding-bottom: calc(70px + var(--safe-bottom));
+        }
+
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 1.25rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--gradient-1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .logo-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover, .icon-btn:active {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        .sync-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            padding: 0.4rem 0.75rem;
+            background: var(--bg-card);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .sync-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-green);
+        }
+
+        .sync-dot.syncing { animation: pulse 1s infinite; }
+        .sync-dot.error { background: var(--accent-red); }
+        .sync-dot.offline { background: var(--text-muted); }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 1.25rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .page { display: none; }
+        .page.active { display: block; }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .card-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+
+        .stat-card[data-color="green"]::before { background: var(--accent-green); }
+        .stat-card[data-color="blue"]::before { background: var(--accent-blue); }
+        .stat-card[data-color="purple"]::before { background: var(--accent-purple); }
+        .stat-card[data-color="orange"]::before { background: var(--accent-orange); }
+
+        .stat-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .stat-value { font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 700; }
+        .stat-label { font-size: 0.8rem; color: var(--text-secondary); }
+
+        .heatmap-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 0.5rem;
+        }
+
+        .heatmap-wrapper { min-width: 750px; }
+
+        .heatmap-months {
+            display: flex;
+            padding-left: 30px;
+            margin-bottom: 0.25rem;
+        }
+
+        .heatmap-month {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            flex: 1;
+            text-align: center;
+        }
+
+        .heatmap-content { display: flex; gap: 2px; }
+
+        .heatmap-days {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding-right: 4px;
+        }
+
+        .heatmap-day-label {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            height: 11px;
+            line-height: 11px;
+        }
+
+        .heatmap-grid { display: flex; gap: 2px; }
+        .heatmap-week { display: flex; flex-direction: column; gap: 2px; }
+
+        .heatmap-cell {
+            width: 11px;
+            height: 11px;
+            border-radius: 2px;
+            background: var(--bg-hover);
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .heatmap-cell:hover { transform: scale(1.3); }
+
+        .heatmap-cell[data-level="0"] { background: var(--bg-hover); }
+        .heatmap-cell[data-level="1"] { background: rgba(16, 185, 129, 0.25); }
+        .heatmap-cell[data-level="2"] { background: rgba(16, 185, 129, 0.5); }
+        .heatmap-cell[data-level="3"] { background: rgba(16, 185, 129, 0.75); }
+        .heatmap-cell[data-level="4"] { background: #10b981; }
+
+        .heatmap-legend {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.25rem;
+            margin-top: 0.75rem;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .heatmap-legend-cell {
+            width: 11px;
+            height: 11px;
+            border-radius: 2px;
+        }
+
+        .goals-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .goal-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .goal-card:active { transform: scale(0.98); }
+
+        .goal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+
+        .goal-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .goal-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            background: var(--bg-hover);
+        }
+
+        .goal-name { font-weight: 600; font-size: 0.95rem; }
+        .goal-timeframe { font-size: 0.75rem; color: var(--text-muted); }
+        .goal-menu { color: var(--text-muted); padding: 0.25rem; cursor: pointer; }
+        .goal-progress { margin-bottom: 0.5rem; }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--bg-hover);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .goal-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+        }
+
+        .goal-current { font-weight: 600; }
+        .goal-target { color: var(--text-muted); }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .calendar-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .calendar-nav-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .calendar-month-year {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            margin-bottom: 0.5rem;
+        }
+
+        .calendar-weekday {
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            padding: 0.5rem 0;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            background: var(--bg-hover);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .calendar-day:hover { background: var(--bg-input); }
+        .calendar-day.other-month { opacity: 0.3; }
+        .calendar-day.today { border: 2px solid var(--accent-blue); }
+
+        .calendar-day.has-data::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-green);
+        }
+
+        .calendar-day.has-event::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-orange);
+        }
+
+        .form-group { margin-bottom: 1rem; }
+
+        .form-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 0.4rem;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            border-color: var(--accent-blue);
+        }
+
+        .form-textarea { min-height: 100px; resize: vertical; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .form-hint { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem; }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--gradient-1);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--accent-red);
+        }
+
+        .btn-block { width: 100%; }
+        .btn-sm { padding: 0.5rem 1rem; font-size: 0.8rem; }
+
+        .fab {
+            position: fixed;
+            bottom: calc(90px + var(--safe-bottom));
+            right: 1.25rem;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--gradient-1);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+            z-index: 90;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .fab:active { transform: scale(0.95); }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            padding: 0.5rem 0;
+            padding-bottom: calc(0.5rem + var(--safe-bottom));
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .nav-items {
+            display: flex;
+            justify-content: space-around;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.5rem 1rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.2s;
+            background: none;
+            border: none;
+            font-family: inherit;
+        }
+
+        .nav-item.active { color: var(--accent-green); }
+        .nav-icon { font-size: 1.25rem; }
+        .nav-label { font-size: 0.65rem; font-weight: 500; }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 200;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            padding: 1.5rem;
+            padding-bottom: calc(1.5rem + var(--safe-bottom));
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-handle {
+            width: 40px;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            margin: 0 auto 1rem;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .modal-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: none;
+            background: var(--bg-hover);
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .icon-picker {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 0.5rem;
+        }
+
+        .icon-option {
+            aspect-ratio: 1;
+            border-radius: 10px;
+            border: 2px solid var(--border);
+            background: var(--bg-hover);
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .icon-option.selected {
+            border-color: var(--accent-green);
+            background: rgba(16, 185, 129, 0.15);
+        }
+
+        .color-picker {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .color-option {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .color-option.selected {
+            border-color: var(--text-primary);
+            transform: scale(1.1);
+        }
+
+        .timeframe-pills {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .timeframe-pill {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .timeframe-pill.selected {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: white;
+        }
+
+        .chart-container { position: relative; height: 200px; }
+
+        .event-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-hover);
+            border-radius: var(--radius);
+            margin-bottom: 0.75rem;
+        }
+
+        .event-date { text-align: center; min-width: 50px; }
+
+        .event-date-day {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+        }
+
+        .event-date-month {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .event-info { flex: 1; }
+        .event-title { font-weight: 600; margin-bottom: 0.25rem; }
+        .event-time { font-size: 0.8rem; color: var(--text-muted); }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+        }
+
+        .empty-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
+        .empty-text { font-size: 0.9rem; margin-bottom: 1rem; }
+
+        .settings-section {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .settings-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .settings-section-title {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+        }
+
+        .settings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+        }
+
+        .settings-info { flex: 1; }
+        .settings-title { font-weight: 500; margin-bottom: 0.25rem; }
+        .settings-desc { font-size: 0.8rem; color: var(--text-muted); }
+
+        .toggle {
+            width: 50px;
+            height: 28px;
+            background: var(--bg-hover);
+            border-radius: 14px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .toggle.active { background: var(--accent-green); }
+
+        .toggle::after {
+            content: '';
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+            transition: transform 0.2s;
+        }
+
+        .toggle.active::after { transform: translateX(22px); }
+
+        .tab-pills {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+
+        .tab-pill {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            background: var(--bg-hover);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .tab-pill.active {
+            background: var(--accent-green);
+            color: white;
+        }
+
+        .log-entry {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: var(--bg-hover);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .log-entry-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .log-entry-icon { font-size: 1.25rem; }
+        .log-entry-name { font-weight: 500; }
+
+        .log-entry-value {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-green);
+            font-weight: 500;
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-box-title {
+            font-weight: 600;
+            color: var(--accent-blue);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-box-content {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .success-box {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .import-methods {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .import-method {
+            background: var(--bg-hover);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1rem;
+        }
+
+        .import-method-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .import-method-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        @media (min-width: 768px) {
+            .quick-stats { grid-template-columns: repeat(4, 1fr); }
+            .goals-grid { grid-template-columns: repeat(2, 1fr); }
+            
+            .modal {
+                border-radius: var(--radius-lg);
+                margin: auto;
+                max-height: 80vh;
+            }
+            
+            .modal-overlay {
+                align-items: center;
+                padding: 2rem;
+            }
+
+            @keyframes slideUp {
+                from { transform: translateY(20px); opacity: 0; }
+                to { transform: translateY(0); opacity: 1; }
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .goals-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">📊</div>
+                    <span class="logo-text">LifeTrack</span>
+                </div>
+                <div class="header-actions">
+                    <div class="sync-status" id="syncStatus">
+                        <span class="sync-dot" id="syncDot"></span>
+                        <span id="syncText">Local</span>
+                    </div>
+                    <button class="icon-btn" onclick="openModal('settings')">⚙️</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- Dashboard Page -->
+            <div class="page active" id="page-dashboard">
+                <div class="quick-stats" id="quickStats"></div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">📅 Today's Progress</h2>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);" id="todayDate"></span>
+                    </div>
+                    <div id="todayLogs">
+                        <div class="empty-state" id="noLogsToday">
+                            <div class="empty-icon">📝</div>
+                            <p class="empty-text">No activities logged today</p>
+                            <button class="btn btn-primary btn-sm" onclick="openModal('log')">Log Activity</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <h2 class="section-title">🎯 Active Goals</h2>
+                    <button class="btn btn-sm btn-secondary" onclick="openModal('goal')">+ Add</button>
+                </div>
+                <div class="goals-grid" id="goalsGrid"></div>
+            </div>
+
+            <!-- Goals Page -->
+            <div class="page" id="page-goals">
+                <div class="tab-pills" id="goalTabs">
+                    <button class="tab-pill active" data-filter="all">All</button>
+                    <button class="tab-pill" data-filter="daily">Daily</button>
+                    <button class="tab-pill" data-filter="weekly">Weekly</button>
+                    <button class="tab-pill" data-filter="monthly">Monthly</button>
+                    <button class="tab-pill" data-filter="yearly">Yearly</button>
+                </div>
+                <div class="goals-grid" id="allGoalsGrid"></div>
+            </div>
+
+            <!-- Calendar Page -->
+            <div class="page" id="page-calendar">
+                <div class="card">
+                    <div class="calendar-header">
+                        <div class="calendar-nav">
+                            <button class="calendar-nav-btn" onclick="changeMonth(-1)">‹</button>
+                            <span class="calendar-month-year" id="calendarTitle"></span>
+                            <button class="calendar-nav-btn" onclick="changeMonth(1)">›</button>
+                        </div>
+                        <button class="btn btn-sm btn-secondary" onclick="goToToday()">Today</button>
+                    </div>
+                    <div class="calendar-weekdays">
+                        <div class="calendar-weekday">Sun</div>
+                        <div class="calendar-weekday">Mon</div>
+                        <div class="calendar-weekday">Tue</div>
+                        <div class="calendar-weekday">Wed</div>
+                        <div class="calendar-weekday">Thu</div>
+                        <div class="calendar-weekday">Fri</div>
+                        <div class="calendar-weekday">Sat</div>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid"></div>
+                </div>
+
+                <div class="section-header" style="margin-top: 1.5rem;">
+                    <h2 class="section-title">📌 Upcoming Events</h2>
+                    <button class="btn btn-sm btn-secondary" onclick="openModal('event')">+ Add</button>
+                </div>
+                <div id="eventsList"></div>
+            </div>
+
+            <!-- Analytics Page -->
+            <div class="page" id="page-analytics">
+                <div class="form-group">
+                    <select class="form-select" id="analyticsGoalSelect" onchange="updateAnalytics()">
+                        <option value="">Select a goal to analyze</option>
+                    </select>
+                </div>
+
+                <div class="card" id="heatmapCard" style="display: none;">
+                    <div class="card-header">
+                        <h2 class="card-title">📅 Year Overview</h2>
+                        <select class="form-select" style="width: auto; padding: 0.4rem 0.75rem; font-size: 0.8rem;" id="heatmapYear" onchange="renderHeatmap()"></select>
+                    </div>
+                    <div class="heatmap-container">
+                        <div class="heatmap-wrapper" id="heatmapWrapper"></div>
+                    </div>
+                    <div class="heatmap-legend">
+                        <span>Less</span>
+                        <div class="heatmap-legend-cell" style="background: var(--bg-hover)"></div>
+                        <div class="heatmap-legend-cell" style="background: rgba(16, 185, 129, 0.25)"></div>
+                        <div class="heatmap-legend-cell" style="background: rgba(16, 185, 129, 0.5)"></div>
+                        <div class="heatmap-legend-cell" style="background: rgba(16, 185, 129, 0.75)"></div>
+                        <div class="heatmap-legend-cell" style="background: #10b981"></div>
+                        <span>More</span>
+                    </div>
+                </div>
+
+                <div class="card" id="chartCard" style="display: none;">
+                    <div class="card-header">
+                        <h2 class="card-title">📈 Progress Chart</h2>
+                        <div class="tab-pills" style="margin: 0;">
+                            <button class="tab-pill active" data-period="week" onclick="changeChartPeriod('week')">Week</button>
+                            <button class="tab-pill" data-period="month" onclick="changeChartPeriod('month')">Month</button>
+                            <button class="tab-pill" data-period="year" onclick="changeChartPeriod('year')">Year</button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="progressChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card" id="statsCard" style="display: none;">
+                    <h2 class="card-title" style="margin-bottom: 1rem;">📊 Statistics</h2>
+                    <div id="goalStats"></div>
+                </div>
+            </div>
+        </main>
+
+        <button class="fab" onclick="openModal('log')">+</button>
+
+        <nav class="bottom-nav">
+            <div class="nav-items">
+                <button class="nav-item active" data-page="dashboard">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-label">Home</span>
+                </button>
+                <button class="nav-item" data-page="goals">
+                    <span class="nav-icon">🎯</span>
+                    <span class="nav-label">Goals</span>
+                </button>
+                <button class="nav-item" data-page="calendar">
+                    <span class="nav-icon">📅</span>
+                    <span class="nav-label">Calendar</span>
+                </button>
+                <button class="nav-item" data-page="analytics">
+                    <span class="nav-icon">📈</span>
+                    <span class="nav-label">Analytics</span>
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Log Activity Modal -->
+    <div class="modal-overlay" id="modal-log">
+        <div class="modal">
+            <div class="modal-handle"></div>
+            <div class="modal-header">
+                <h3 class="modal-title">📝 Log Activity</h3>
+                <button class="modal-close" onclick="closeModal('log')">×</button>
+            </div>
+            <form id="logForm" onsubmit="saveLog(event)">
+                <div class="form-group">
+                    <label class="form-label">Select Goal</label>
+                    <select class="form-select" id="logGoalSelect" required>
+                        <option value="">Choose a goal...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Value</label>
+                    <input type="number" class="form-input" id="logValue" placeholder="Enter value" required step="any">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Date</label>
+                        <input type="date" class="form-input" id="logDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Time</label>
+                        <input type="time" class="form-input" id="logTime">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Notes (optional)</label>
+                    <textarea class="form-textarea" id="logNotes" placeholder="Add any notes..." style="min-height: 60px;"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Save Log</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Goal Modal -->
+    <div class="modal-overlay" id="modal-goal">
+        <div class="modal">
+            <div class="modal-handle"></div>
+            <div class="modal-header">
+                <h3 class="modal-title">🎯 Create New Goal</h3>
+                <button class="modal-close" onclick="closeModal('goal')">×</button>
+            </div>
+            <form id="goalForm" onsubmit="saveGoal(event)">
+                <div class="form-group">
+                    <label class="form-label">Goal Name</label>
+                    <input type="text" class="form-input" id="goalName" placeholder="e.g., Daily Workout" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Icon</label>
+                    <div class="icon-picker" id="iconPicker">
+                        <div class="icon-option selected" data-icon="🏃">🏃</div>
+                        <div class="icon-option" data-icon="📚">📚</div>
+                        <div class="icon-option" data-icon="💻">💻</div>
+                        <div class="icon-option" data-icon="🧘">🧘</div>
+                        <div class="icon-option" data-icon="💪">💪</div>
+                        <div class="icon-option" data-icon="💰">💰</div>
+                        <div class="icon-option" data-icon="💧">💧</div>
+                        <div class="icon-option" data-icon="😴">😴</div>
+                        <div class="icon-option" data-icon="🎵">🎵</div>
+                        <div class="icon-option" data-icon="✍️">✍️</div>
+                        <div class="icon-option" data-icon="🎨">🎨</div>
+                        <div class="icon-option" data-icon="🌱">🌱</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Color</label>
+                    <div class="color-picker" id="colorPicker">
+                        <div class="color-option selected" data-color="#10b981" style="background: #10b981"></div>
+                        <div class="color-option" data-color="#3b82f6" style="background: #3b82f6"></div>
+                        <div class="color-option" data-color="#8b5cf6" style="background: #8b5cf6"></div>
+                        <div class="color-option" data-color="#ec4899" style="background: #ec4899"></div>
+                        <div class="color-option" data-color="#f59e0b" style="background: #f59e0b"></div>
+                        <div class="color-option" data-color="#ef4444" style="background: #ef4444"></div>
+                        <div class="color-option" data-color="#06b6d4" style="background: #06b6d4"></div>
+                        <div class="color-option" data-color="#eab308" style="background: #eab308"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Timeframe</label>
+                    <div class="timeframe-pills" id="timeframePicker">
+                        <button type="button" class="timeframe-pill selected" data-timeframe="daily">Daily</button>
+                        <button type="button" class="timeframe-pill" data-timeframe="weekly">Weekly</button>
+                        <button type="button" class="timeframe-pill" data-timeframe="monthly">Monthly</button>
+                        <button type="button" class="timeframe-pill" data-timeframe="yearly">Yearly</button>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Target Value</label>
+                        <input type="number" class="form-input" id="goalTarget" placeholder="e.g., 30" required step="any">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Unit</label>
+                        <input type="text" class="form-input" id="goalUnit" placeholder="e.g., min">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Visualization</label>
+                    <div class="timeframe-pills">
+                        <button type="button" class="timeframe-pill selected viz-pill" data-viz="heatmap">🟩 Heatmap</button>
+                        <button type="button" class="timeframe-pill viz-pill" data-viz="chart">📈 Chart</button>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Create Goal</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Event Modal -->
+    <div class="modal-overlay" id="modal-event">
+        <div class="modal">
+            <div class="modal-handle"></div>
+            <div class="modal-header">
+                <h3 class="modal-title">📌 Add Event</h3>
+                <button class="modal-close" onclick="closeModal('event')">×</button>
+            </div>
+            <form id="eventForm" onsubmit="saveEvent(event)">
+                <div class="form-group">
+                    <label class="form-label">Event Title</label>
+                    <input type="text" class="form-input" id="eventTitle" placeholder="Event name" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Date</label>
+                        <input type="date" class="form-input" id="eventDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Time</label>
+                        <input type="time" class="form-input" id="eventTime">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-textarea" id="eventDesc" placeholder="Event details..." style="min-height: 60px;"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Add Event</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="modal-settings">
+        <div class="modal">
+            <div class="modal-handle"></div>
+            <div class="modal-header">
+                <h3 class="modal-title">⚙️ Settings</h3>
+                <button class="modal-close" onclick="closeModal('settings')">×</button>
+            </div>
+
+            <!-- Import/Export Section -->
+            <div class="settings-section">
+                <div class="settings-section-title">💾 Data Management</div>
+
+                <!-- IMPORT METHODS -->
+                <div class="import-methods">
+                    <!-- Method 1: Paste JSON -->
+                    <div class="import-method">
+                        <div class="import-method-title">📋 Method 1: Paste JSON (Easiest for iPhone)</div>
+                        <div class="import-method-desc">Open your JSON file in Files app, select all text, copy, and paste here</div>
+                        <textarea class="form-textarea" id="pasteJsonArea" placeholder="Paste your JSON backup here..." style="min-height: 80px; font-family: monospace; font-size: 0.8rem;"></textarea>
+                        <button class="btn btn-primary btn-sm btn-block" style="margin-top: 0.5rem;" onclick="importFromPaste()">Import from Paste</button>
+                    </div>
+
+                    <!-- Method 2: File Picker -->
+                    <div class="import-method">
+                        <div class="import-method-title">📁 Method 2: File Picker</div>
+                        <div class="import-method-desc">Select JSON file from your device</div>
+                        <label class="btn btn-secondary btn-sm btn-block" style="cursor: pointer;">
+                            Choose File
+                            <input type="file" accept=".json,application/json" id="fileInput" onchange="importFromFile(event)" style="display: none;">
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Export -->
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <div class="settings-title">Export Data</div>
+                        <div class="settings-desc">Download backup as JSON file</div>
+                    </div>
+                    <button class="btn btn-secondary btn-sm" onclick="exportData()">Export</button>
+                </div>
+
+                <!-- Copy to Clipboard -->
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <div class="settings-title">Copy Data to Clipboard</div>
+                        <div class="settings-desc">Copy JSON to paste elsewhere</div>
+                    </div>
+                    <button class="btn btn-secondary btn-sm" onclick="copyDataToClipboard()">Copy</button>
+                </div>
+
+                <!-- Clear All -->
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <div class="settings-title">Clear All Data</div>
+                        <div class="settings-desc">Delete everything permanently</div>
+                    </div>
+                    <button class="btn btn-danger btn-sm" onclick="clearAllData()">Clear</button>
+                </div>
+            </div>
+
+            <!-- Google Sheets Section -->
+            <div class="settings-section">
+                <div class="settings-section-title">☁️ Google Sheets Backup</div>
+                
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <div class="settings-title">Enable Google Sheets Sync</div>
+                        <div class="settings-desc">Auto-backup to Google Sheets</div>
+                    </div>
+                    <div class="toggle" id="sheetsToggle" onclick="toggleSheets()"></div>
+                </div>
+
+                <div id="sheetsConfig" style="display: none; margin-top: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">Google Apps Script Web App URL</label>
+                        <input type="url" class="form-input" id="sheetsWebAppUrl" placeholder="https://script.google.com/macros/s/.../exec">
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem;">
+                        <button class="btn btn-primary btn-sm" onclick="testSheetsConnection()">Test</button>
+                        <button class="btn btn-secondary btn-sm" onclick="syncToSheets()">Sync Now</button>
+                        <button class="btn btn-secondary btn-sm" onclick="loadFromSheets()">Load from Sheets</button>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; color: var(--text-muted); font-size: 0.75rem; margin-top: 1rem;">
+                <p>LifeTrack v2.1 • Data: <span id="dataStats">0 goals, 0 logs</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Day Detail Modal -->
+    <div class="modal-overlay" id="modal-day">
+        <div class="modal">
+            <div class="modal-handle"></div>
+            <div class="modal-header">
+                <h3 class="modal-title" id="dayModalTitle">📅 Day Details</h3>
+                <button class="modal-close" onclick="closeModal('day')">×</button>
+            </div>
+            <div id="dayModalContent"></div>
+            <button class="btn btn-primary btn-block" style="margin-top: 1rem;" onclick="logForSelectedDay()">+ Log Activity</button>
+        </div>
+    </div>
+
+    <!-- Goal Detail Modal -->
+    <div class="modal-overlay" id="modal-goalDetail">
+        <div class="modal">
+            <div class="modal-handle"></div>
+            <div class="modal-header">
+                <h3 class="modal-title" id="goalDetailTitle">Goal Details</h3>
+                <button class="modal-close" onclick="closeModal('goalDetail')">×</button>
+            </div>
+            <div id="goalDetailContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== DATA STORE ====================
+        const DB_KEY = 'lifetrack_data_v2';
+        
+        let appData = {
+            goals: [],
+            logs: [],
+            events: [],
+            settings: {
+                sheetsEnabled: false,
+                sheetsWebAppUrl: ''
+            }
+        };
+
+        function loadData() {
+            const saved = localStorage.getItem(DB_KEY);
+            if (saved) {
+                appData = { ...appData, ...JSON.parse(saved) };
+            }
+            updateDataStats();
+        }
+
+        function saveData() {
+            localStorage.setItem(DB_KEY, JSON.stringify(appData));
+            updateSyncStatus('saving');
+            updateDataStats();
+            setTimeout(() => updateSyncStatus('saved'), 500);
+            
+            if (appData.settings.sheetsEnabled && appData.settings.sheetsWebAppUrl) {
+                syncToSheets();
+            }
+        }
+
+        function updateDataStats() {
+            const el = document.getElementById('dataStats');
+            if (el) {
+                el.textContent = `${appData.goals.length} goals, ${appData.logs.length} logs`;
+            }
+        }
+
+        function updateSyncStatus(status) {
+            const dot = document.getElementById('syncDot');
+            const text = document.getElementById('syncText');
+            
+            dot.classList.remove('syncing', 'error', 'offline');
+            
+            switch(status) {
+                case 'saving':
+                    dot.classList.add('syncing');
+                    text.textContent = 'Saving...';
+                    break;
+                case 'saved':
+                    text.textContent = appData.settings.sheetsEnabled ? 'Synced' : 'Saved';
+                    break;
+                case 'syncing':
+                    dot.classList.add('syncing');
+                    text.textContent = 'Syncing...';
+                    break;
+                case 'error':
+                    dot.classList.add('error');
+                    text.textContent = 'Error';
+                    break;
+            }
+        }
+
+        // ==================== IMPORT METHODS ====================
+        
+        // Method 1: Paste JSON directly
+        function importFromPaste() {
+            const textarea = document.getElementById('pasteJsonArea');
+            const jsonText = textarea.value.trim();
+            
+            if (!jsonText) {
+                alert('Please paste your JSON data first');
+                return;
+            }
+
+            try {
+                const imported = JSON.parse(jsonText);
+                
+                if (imported.goals !== undefined || imported.logs !== undefined) {
+                    // Merge or replace
+                    const action = confirm('Found valid data!\n\n• Goals: ' + (imported.goals?.length || 0) + '\n• Logs: ' + (imported.logs?.length || 0) + '\n• Events: ' + (imported.events?.length || 0) + '\n\nClick OK to import (replaces current data)\nClick Cancel to abort');
+                    
+                    if (action) {
+                        appData.goals = imported.goals || [];
+                        appData.logs = imported.logs || [];
+                        appData.events = imported.events || [];
+                        if (imported.settings) {
+                            appData.settings = { ...appData.settings, ...imported.settings };
+                        }
+                        saveData();
+                        textarea.value = '';
+                        alert('✅ Import successful!');
+                        location.reload();
+                    }
+                } else {
+                    alert('❌ Invalid format. Make sure you copied the entire JSON file.');
+                }
+            } catch (err) {
+                alert('❌ JSON Parse Error:\n\n' + err.message + '\n\nMake sure you copied the complete JSON text.');
+            }
+        }
+
+        // Method 2: File picker
+        function importFromFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    
+                    if (imported.goals !== undefined) {
+                        const action = confirm('Import ' + (imported.goals?.length || 0) + ' goals and ' + (imported.logs?.length || 0) + ' logs?');
+                        
+                        if (action) {
+                            appData.goals = imported.goals || [];
+                            appData.logs = imported.logs || [];
+                            appData.events = imported.events || [];
+                            if (imported.settings) {
+                                appData.settings = { ...appData.settings, ...imported.settings };
+                            }
+                            saveData();
+                            alert('✅ Import successful!');
+                            location.reload();
+                        }
+                    } else {
+                        alert('❌ Invalid backup file');
+                    }
+                } catch (err) {
+                    alert('❌ Error: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function exportData() {
+            const dataStr = JSON.stringify(appData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `lifetrack_backup_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function copyDataToClipboard() {
+            const dataStr = JSON.stringify(appData, null, 2);
+            
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(dataStr).then(() => {
+                    alert('✅ Data copied to clipboard!\n\nYou can paste this anywhere to backup.');
+                }).catch(() => {
+                    fallbackCopy(dataStr);
+                });
+            } else {
+                fallbackCopy(dataStr);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                alert('✅ Data copied to clipboard!');
+            } catch (err) {
+                alert('❌ Copy failed. Please manually select and copy.');
+            }
+            document.body.removeChild(textarea);
+        }
+
+        function clearAllData() {
+            if (confirm('Delete ALL data permanently?')) {
+                if (confirm('This cannot be undone. Continue?')) {
+                    appData = { goals: [], logs: [], events: [], settings: appData.settings };
+                    saveData();
+                    location.reload();
+                }
+            }
+        }
+
+        // ==================== GOOGLE SHEETS ====================
+        function toggleSheets() {
+            const toggle = document.getElementById('sheetsToggle');
+            const config = document.getElementById('sheetsConfig');
+            toggle.classList.toggle('active');
+            appData.settings.sheetsEnabled = toggle.classList.contains('active');
+            config.style.display = appData.settings.sheetsEnabled ? 'block' : 'none';
+            saveData();
+        }
+
+        async function testSheetsConnection() {
+            const url = document.getElementById('sheetsWebAppUrl').value;
+            if (!url) {
+                alert('Please enter the Web App URL');
+                return;
+            }
+
+            updateSyncStatus('syncing');
+            
+            try {
+                const response = await fetch(`${url}?action=test`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('✅ Connected!');
+                    appData.settings.sheetsWebAppUrl = url;
+                    saveData();
+                } else {
+                    alert('❌ Failed: ' + result.error);
+                    updateSyncStatus('error');
+                }
+            } catch (error) {
+                alert('❌ Failed: ' + error.message);
+                updateSyncStatus('error');
+            }
+        }
+
+        async function syncToSheets() {
+            if (!appData.settings.sheetsEnabled || !appData.settings.sheetsWebAppUrl) return;
+
+            updateSyncStatus('syncing');
+
+            try {
+                const dataToSync = { goals: appData.goals, logs: appData.logs, events: appData.events };
+                const url = `${appData.settings.sheetsWebAppUrl}?action=save&data=${encodeURIComponent(JSON.stringify(dataToSync))}`;
+                const response = await fetch(url);
+                const result = await response.json();
+                updateSyncStatus(result.success ? 'saved' : 'error');
+            } catch (error) {
+                console.error('Sync error:', error);
+                updateSyncStatus('error');
+            }
+        }
+
+        async function loadFromSheets() {
+            if (!appData.settings.sheetsWebAppUrl) {
+                alert('Please enter and test the Web App URL first');
+                return;
+            }
+
+            updateSyncStatus('syncing');
+
+            try {
+                const response = await fetch(`${appData.settings.sheetsWebAppUrl}?action=load`);
+                const result = await response.json();
+
+                if (result.success && result.data) {
+                    appData.goals = result.data.goals || [];
+                    appData.logs = result.data.logs || [];
+                    appData.events = result.data.events || [];
+                    localStorage.setItem(DB_KEY, JSON.stringify(appData));
+                    alert('✅ Loaded from Google Sheets!');
+                    location.reload();
+                } else {
+                    alert('❌ Failed to load');
+                    updateSyncStatus('error');
+                }
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+                updateSyncStatus('error');
+            }
+        }
+
+        // ==================== INITIALIZATION ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            initNavigation();
+            initModals();
+            initPickers();
+            initGoalTabs();
+            setDefaultDates();
+            renderDashboard();
+            renderCalendar();
+            renderEvents();
+            populateGoalSelects();
+            populateYearSelect();
+            
+            if (appData.settings.sheetsEnabled) {
+                document.getElementById('sheetsToggle').classList.add('active');
+                document.getElementById('sheetsConfig').style.display = 'block';
+            }
+            if (appData.settings.sheetsWebAppUrl) {
+                document.getElementById('sheetsWebAppUrl').value = appData.settings.sheetsWebAppUrl;
+            }
+        });
+
+        function setDefaultDates() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('logDate').value = today;
+            document.getElementById('eventDate').value = today;
+            document.getElementById('todayDate').textContent = new Date().toLocaleDateString('en-US', {
+                weekday: 'long', month: 'long', day: 'numeric'
+            });
+        }
+
+        function initNavigation() {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const page = item.dataset.page;
+                    showPage(page);
+                    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                });
+            });
+        }
+
+        function showPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(`page-${page}`).classList.add('active');
+            if (page === 'goals') renderAllGoals();
+            if (page === 'analytics') initAnalytics();
+        }
+
+        function initModals() {
+            document.querySelectorAll('.modal-overlay').forEach(overlay => {
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay) {
+                        const modalId = overlay.id.replace('modal-', '');
+                        closeModal(modalId);
+                    }
+                });
+            });
+        }
+
+        function openModal(type) {
+            document.getElementById(`modal-${type}`).classList.add('active');
+            if (type === 'log') populateGoalSelects();
+        }
+
+        function closeModal(type) {
+            document.getElementById(`modal-${type}`).classList.remove('active');
+        }
+
+        function initPickers() {
+            document.querySelectorAll('.icon-option').forEach(opt => {
+                opt.addEventListener('click', () => {
+                    document.querySelectorAll('.icon-option').forEach(o => o.classList.remove('selected'));
+                    opt.classList.add('selected');
+                });
+            });
+
+            document.querySelectorAll('.color-option').forEach(opt => {
+                opt.addEventListener('click', () => {
+                    document.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
+                    opt.classList.add('selected');
+                });
+            });
+
+            document.querySelectorAll('.timeframe-pill:not(.viz-pill)').forEach(pill => {
+                pill.addEventListener('click', () => {
+                    document.querySelectorAll('.timeframe-pill:not(.viz-pill)').forEach(p => p.classList.remove('selected'));
+                    pill.classList.add('selected');
+                });
+            });
+
+            document.querySelectorAll('.viz-pill').forEach(pill => {
+                pill.addEventListener('click', () => {
+                    document.querySelectorAll('.viz-pill').forEach(p => p.classList.remove('selected'));
+                    pill.classList.add('selected');
+                });
+            });
+        }
+
+        // ==================== GOALS ====================
+        function saveGoal(e) {
+            e.preventDefault();
+            
+            const goal = {
+                id: Date.now().toString(),
+                name: document.getElementById('goalName').value,
+                icon: document.querySelector('.icon-option.selected').dataset.icon,
+                color: document.querySelector('.color-option.selected').dataset.color,
+                timeframe: document.querySelector('.timeframe-pill.selected:not(.viz-pill)').dataset.timeframe,
+                target: parseFloat(document.getElementById('goalTarget').value),
+                unit: document.getElementById('goalUnit').value || '',
+                visualization: document.querySelector('.viz-pill.selected').dataset.viz,
+                createdAt: new Date().toISOString()
+            };
+
+            appData.goals.push(goal);
+            saveData();
+            closeModal('goal');
+            document.getElementById('goalForm').reset();
+            document.querySelectorAll('.icon-option').forEach((o,i) => o.classList.toggle('selected', i===0));
+            document.querySelectorAll('.color-option').forEach((o,i) => o.classList.toggle('selected', i===0));
+            
+            renderDashboard();
+            populateGoalSelects();
+        }
+
+        function deleteGoal(goalId) {
+            if (confirm('Delete this goal and all its logs?')) {
+                appData.goals = appData.goals.filter(g => g.id !== goalId);
+                appData.logs = appData.logs.filter(l => l.goalId !== goalId);
+                saveData();
+                renderDashboard();
+                renderAllGoals();
+                populateGoalSelects();
+            }
+        }
+
+        function getGoalProgress(goal) {
+            const now = new Date();
+            let startDate, endDate;
+
+            switch (goal.timeframe) {
+                case 'daily':
+                    startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                    endDate = new Date(startDate);
+                    endDate.setDate(endDate.getDate() + 1);
+                    break;
+                case 'weekly':
+                    const dayOfWeek = now.getDay();
+                    startDate = new Date(now);
+                    startDate.setDate(now.getDate() - dayOfWeek);
+                    startDate.setHours(0, 0, 0, 0);
+                    endDate = new Date(startDate);
+                    endDate.setDate(endDate.getDate() + 7);
+                    break;
+                case 'monthly':
+                    startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+                    endDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+                    break;
+                case 'yearly':
+                    startDate = new Date(now.getFullYear(), 0, 1);
+                    endDate = new Date(now.getFullYear() + 1, 0, 1);
+                    break;
+            }
+
+            const logs = appData.logs.filter(log => {
+                const logDate = new Date(log.date);
+                return log.goalId === goal.id && logDate >= startDate && logDate < endDate;
+            });
+
+            const current = logs.reduce((sum, log) => sum + parseFloat(log.value), 0);
+            const percentage = Math.min((current / goal.target) * 100, 100);
+
+            return { current, percentage, logs };
+        }
+
+        function renderGoalCard(goal, showMenu = false) {
+            const progress = getGoalProgress(goal);
+            const timeframeLabels = { daily: 'Daily', weekly: 'Weekly', monthly: 'Monthly', yearly: 'Yearly' };
+
+            return `
+                <div class="goal-card" onclick="showGoalDetail('${goal.id}')">
+                    <div class="goal-header">
+                        <div class="goal-info">
+                            <div class="goal-icon" style="background: ${goal.color}20">${goal.icon}</div>
+                            <div>
+                                <div class="goal-name">${goal.name}</div>
+                                <div class="goal-timeframe">${timeframeLabels[goal.timeframe]} Goal</div>
+                            </div>
+                        </div>
+                        ${showMenu ? `<div class="goal-menu" onclick="event.stopPropagation(); deleteGoal('${goal.id}')">🗑️</div>` : ''}
+                    </div>
+                    <div class="goal-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progress.percentage}%; background: ${goal.color}"></div>
+                        </div>
+                    </div>
+                    <div class="goal-stats">
+                        <span class="goal-current" style="color: ${goal.color}">${progress.current} ${goal.unit}</span>
+                        <span class="goal-target">/ ${goal.target} ${goal.unit}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function initGoalTabs() {
+            document.querySelectorAll('#goalTabs .tab-pill').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('#goalTabs .tab-pill').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    renderAllGoals(tab.dataset.filter);
+                });
+            });
+        }
+
+        function renderAllGoals(filter = 'all') {
+            const grid = document.getElementById('allGoalsGrid');
+            let goals = appData.goals;
+            
+            if (filter !== 'all') goals = goals.filter(g => g.timeframe === filter);
+
+            if (goals.length === 0) {
+                grid.innerHTML = `<div class="empty-state" style="grid-column: 1/-1"><div class="empty-icon">🎯</div><p class="empty-text">No goals yet</p><button class="btn btn-primary btn-sm" onclick="openModal('goal')">Create Goal</button></div>`;
+                return;
+            }
+
+            grid.innerHTML = goals.map(g => renderGoalCard(g, true)).join('');
+        }
+
+        function showGoalDetail(goalId) {
+            const goal = appData.goals.find(g => g.id === goalId);
+            if (!goal) return;
+
+            const progress = getGoalProgress(goal);
+            
+            document.getElementById('goalDetailTitle').textContent = `${goal.icon} ${goal.name}`;
+            document.getElementById('goalDetailContent').innerHTML = `
+                <div class="goal-progress" style="margin-bottom: 1rem;">
+                    <div class="progress-bar" style="height: 12px;">
+                        <div class="progress-fill" style="width: ${progress.percentage}%; background: ${goal.color}"></div>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem;">
+                    <div>
+                        <div style="font-size: 2rem; font-weight: 700; color: ${goal.color}">${progress.current}</div>
+                        <div style="color: var(--text-muted); font-size: 0.85rem">of ${goal.target} ${goal.unit}</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 2rem; font-weight: 700;">${Math.round(progress.percentage)}%</div>
+                        <div style="color: var(--text-muted); font-size: 0.85rem">complete</div>
+                    </div>
+                </div>
+                <h4 style="margin-bottom: 0.75rem; font-size: 0.9rem;">Recent Logs</h4>
+                ${progress.logs.slice(-5).reverse().map(log => `
+                    <div class="log-entry">
+                        <div class="log-entry-info">
+                            <span class="log-entry-icon">${goal.icon}</span>
+                            <span class="log-entry-name">${new Date(log.date).toLocaleDateString()}</span>
+                        </div>
+                        <span class="log-entry-value">${log.value} ${goal.unit}</span>
+                    </div>
+                `).join('') || '<p style="color: var(--text-muted); font-size: 0.85rem;">No logs yet</p>'}
+            `;
+            
+            openModal('goalDetail');
+        }
+
+        // ==================== LOGS ====================
+        function saveLog(e) {
+            e.preventDefault();
+
+            const log = {
+                id: Date.now().toString(),
+                goalId: document.getElementById('logGoalSelect').value,
+                value: parseFloat(document.getElementById('logValue').value),
+                date: document.getElementById('logDate').value,
+                time: document.getElementById('logTime').value,
+                notes: document.getElementById('logNotes').value,
+                createdAt: new Date().toISOString()
+            };
+
+            appData.logs.push(log);
+            saveData();
+            closeModal('log');
+            document.getElementById('logForm').reset();
+            setDefaultDates();
+            
+            renderDashboard();
+            renderCalendar();
+        }
+
+        function populateGoalSelects() {
+            const selects = [document.getElementById('logGoalSelect'), document.getElementById('analyticsGoalSelect')];
+
+            selects.forEach(select => {
+                if (!select) return;
+                const currentValue = select.value;
+                select.innerHTML = '<option value="">Choose a goal...</option>';
+                appData.goals.forEach(goal => {
+                    select.innerHTML += `<option value="${goal.id}">${goal.icon} ${goal.name}</option>`;
+                });
+                select.value = currentValue;
+            });
+        }
+
+        // ==================== DASHBOARD ====================
+        function renderDashboard() {
+            renderQuickStats();
+            renderGoalsGrid();
+            renderTodayLogs();
+        }
+
+        function renderQuickStats() {
+            const stats = document.getElementById('quickStats');
+            const colors = ['green', 'blue', 'purple', 'orange'];
+            const topGoals = appData.goals.slice(0, 4);
+            
+            if (topGoals.length === 0) {
+                stats.innerHTML = `<div class="stat-card" data-color="green" style="grid-column: 1/-1; text-align: center; padding: 2rem;"><p style="color: var(--text-muted);">Add goals to see stats</p></div>`;
+                return;
+            }
+
+            stats.innerHTML = topGoals.map((goal, i) => {
+                const progress = getGoalProgress(goal);
+                return `<div class="stat-card" data-color="${colors[i % colors.length]}"><div class="stat-icon">${goal.icon}</div><div class="stat-value">${progress.current}</div><div class="stat-label">${goal.name} (${goal.unit || 'units'})</div></div>`;
+            }).join('');
+        }
+
+        function renderGoalsGrid() {
+            const grid = document.getElementById('goalsGrid');
+            
+            if (appData.goals.length === 0) {
+                grid.innerHTML = `<div class="empty-state" style="grid-column: 1/-1"><div class="empty-icon">🎯</div><p class="empty-text">No goals yet</p><button class="btn btn-primary btn-sm" onclick="openModal('goal')">Create Goal</button></div>`;
+                return;
+            }
+
+            grid.innerHTML = appData.goals.slice(0, 6).map(g => renderGoalCard(g)).join('');
+        }
+
+        function renderTodayLogs() {
+            const container = document.getElementById('todayLogs');
+            const today = new Date().toISOString().split('T')[0];
+            const todayLogs = appData.logs.filter(l => l.date === today);
+
+            if (todayLogs.length === 0) {
+                document.getElementById('noLogsToday').style.display = 'block';
+                return;
+            }
+
+            document.getElementById('noLogsToday').style.display = 'none';
+            
+            container.innerHTML = todayLogs.map(log => {
+                const goal = appData.goals.find(g => g.id === log.goalId);
+                if (!goal) return '';
+                return `<div class="log-entry"><div class="log-entry-info"><span class="log-entry-icon">${goal.icon}</span><span class="log-entry-name">${goal.name}</span></div><span class="log-entry-value">${log.value} ${goal.unit}</span></div>`;
+            }).join('');
+        }
+
+        // ==================== CALENDAR ====================
+        let currentCalendarDate = new Date();
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            const title = document.getElementById('calendarTitle');
+            
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+            
+            title.textContent = new Date(year, month).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+            
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const startDay = firstDay.getDay();
+            const daysInMonth = lastDay.getDate();
+            
+            const today = new Date();
+            const todayStr = today.toISOString().split('T')[0];
+            
+            let html = '';
+            
+            const prevMonthDays = new Date(year, month, 0).getDate();
+            for (let i = startDay - 1; i >= 0; i--) {
+                html += `<div class="calendar-day other-month">${prevMonthDays - i}</div>`;
+            }
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const hasData = appData.logs.some(l => l.date === dateStr);
+                const hasEvent = appData.events.some(e => e.date === dateStr);
+                const isToday = dateStr === todayStr;
+                
+                let classes = 'calendar-day';
+                if (isToday) classes += ' today';
+                if (hasData) classes += ' has-data';
+                if (hasEvent) classes += ' has-event';
+                
+                html += `<div class="${classes}" onclick="showDayDetail('${dateStr}')">${day}</div>`;
+            }
+            
+            const totalCells = Math.ceil((startDay + daysInMonth) / 7) * 7;
+            const remaining = totalCells - (startDay + daysInMonth);
+            for (let i = 1; i <= remaining; i++) {
+                html += `<div class="calendar-day other-month">${i}</div>`;
+            }
+            
+            grid.innerHTML = html;
+        }
+
+        function changeMonth(delta) {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + delta);
+            renderCalendar();
+        }
+
+        function goToToday() {
+            currentCalendarDate = new Date();
+            renderCalendar();
+        }
+
+        let selectedDate = null;
+
+        function showDayDetail(dateStr) {
+            selectedDate = dateStr;
+            const date = new Date(dateStr + 'T00:00:00');
+            document.getElementById('dayModalTitle').textContent = date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+
+            const dayLogs = appData.logs.filter(l => l.date === dateStr);
+            const dayEvents = appData.events.filter(e => e.date === dateStr);
+
+            let html = '';
+
+            if (dayEvents.length > 0) {
+                html += '<h4 style="margin-bottom: 0.75rem; font-size: 0.9rem;">📌 Events</h4>';
+                html += dayEvents.map(event => `<div class="event-item" style="margin-bottom: 0.5rem;"><div class="event-info"><div class="event-title">${event.title}</div><div class="event-time">${event.time || 'All day'}</div></div></div>`).join('');
+            }
+
+            if (dayLogs.length > 0) {
+                html += '<h4 style="margin: 1rem 0 0.75rem; font-size: 0.9rem;">📝 Activity Logs</h4>';
+                html += dayLogs.map(log => {
+                    const goal = appData.goals.find(g => g.id === log.goalId);
+                    if (!goal) return '';
+                    return `<div class="log-entry"><div class="log-entry-info"><span class="log-entry-icon">${goal.icon}</span><span class="log-entry-name">${goal.name}</span></div><span class="log-entry-value">${log.value} ${goal.unit}</span></div>`;
+                }).join('');
+            }
+
+            if (dayLogs.length === 0 && dayEvents.length === 0) {
+                html = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No activities or events</p>';
+            }
+
+            document.getElementById('dayModalContent').innerHTML = html;
+            openModal('day');
+        }
+
+        function logForSelectedDay() {
+            closeModal('day');
+            document.getElementById('logDate').value = selectedDate;
+            openModal('log');
+        }
+
+        // ==================== EVENTS ====================
+        function saveEvent(e) {
+            e.preventDefault();
+
+            const event = {
+                id: Date.now().toString(),
+                title: document.getElementById('eventTitle').value,
+                date: document.getElementById('eventDate').value,
+                time: document.getElementById('eventTime').value,
+                description: document.getElementById('eventDesc').value,
+                createdAt: new Date().toISOString()
+            };
+
+            appData.events.push(event);
+            saveData();
+            closeModal('event');
+            document.getElementById('eventForm').reset();
+            setDefaultDates();
+            
+            renderEvents();
+            renderCalendar();
+        }
+
+        function renderEvents() {
+            const container = document.getElementById('eventsList');
+            const today = new Date().toISOString().split('T')[0];
+            
+            const upcomingEvents = appData.events.filter(e => e.date >= today).sort((a, b) => new Date(a.date) - new Date(b.date)).slice(0, 5);
+
+            if (upcomingEvents.length === 0) {
+                container.innerHTML = `<div class="empty-state"><div class="empty-icon">📅</div><p class="empty-text">No upcoming events</p></div>`;
+                return;
+            }
+
+            container.innerHTML = upcomingEvents.map(event => {
+                const date = new Date(event.date + 'T00:00:00');
+                return `<div class="event-item"><div class="event-date"><div class="event-date-day">${date.getDate()}</div><div class="event-date-month">${date.toLocaleDateString('en-US', { month: 'short' })}</div></div><div class="event-info"><div class="event-title">${event.title}</div><div class="event-time">${event.time || 'All day'}</div></div></div>`;
+            }).join('');
+        }
+
+        // ==================== ANALYTICS ====================
+        let progressChart = null;
+
+        function initAnalytics() {
+            populateGoalSelects();
+            populateYearSelect();
+        }
+
+        function populateYearSelect() {
+            const select = document.getElementById('heatmapYear');
+            const currentYear = new Date().getFullYear();
+            select.innerHTML = '';
+            for (let y = currentYear; y >= currentYear - 5; y--) {
+                select.innerHTML += `<option value="${y}">${y}</option>`;
+            }
+        }
+
+        function updateAnalytics() {
+            const goalId = document.getElementById('analyticsGoalSelect').value;
+            
+            if (!goalId) {
+                document.getElementById('heatmapCard').style.display = 'none';
+                document.getElementById('chartCard').style.display = 'none';
+                document.getElementById('statsCard').style.display = 'none';
+                return;
+            }
+
+            const goal = appData.goals.find(g => g.id === goalId);
+            if (!goal) return;
+
+            document.getElementById('heatmapCard').style.display = goal.visualization === 'heatmap' ? 'block' : 'none';
+            document.getElementById('chartCard').style.display = goal.visualization === 'chart' ? 'block' : 'none';
+            document.getElementById('statsCard').style.display = 'block';
+
+            if (goal.visualization === 'heatmap') renderHeatmap();
+            else renderProgressChart('week');
+
+            renderGoalStats(goal);
+        }
+
+        function renderHeatmap() {
+            const goalId = document.getElementById('analyticsGoalSelect').value;
+            const year = parseInt(document.getElementById('heatmapYear').value);
+            const goal = appData.goals.find(g => g.id === goalId);
+            if (!goal) return;
+
+            const wrapper = document.getElementById('heatmapWrapper');
+            const startDate = new Date(year, 0, 1);
+            const endDate = new Date(year, 11, 31);
+            
+            const logs = appData.logs.filter(l => {
+                const logDate = new Date(l.date);
+                return l.goalId === goalId && logDate >= startDate && logDate <= endDate;
+            });
+
+            const dateMap = {};
+            logs.forEach(log => {
+                if (!dateMap[log.date]) dateMap[log.date] = 0;
+                dateMap[log.date] += parseFloat(log.value);
+            });
+
+            const maxValue = Math.max(...Object.values(dateMap), goal.target);
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            
+            let html = `<div class="heatmap-months">${months.map(m => `<span class="heatmap-month">${m}</span>`).join('')}</div><div class="heatmap-content"><div class="heatmap-days"><div class="heatmap-day-label"></div><div class="heatmap-day-label">Mon</div><div class="heatmap-day-label"></div><div class="heatmap-day-label">Wed</div><div class="heatmap-day-label"></div><div class="heatmap-day-label">Fri</div><div class="heatmap-day-label"></div></div><div class="heatmap-grid">`;
+
+            let currentDate = new Date(startDate);
+            while (currentDate.getDay() !== 0) currentDate.setDate(currentDate.getDate() - 1);
+
+            while (currentDate <= endDate || currentDate.getDay() !== 0) {
+                html += '<div class="heatmap-week">';
+                for (let d = 0; d < 7; d++) {
+                    const dateStr = currentDate.toISOString().split('T')[0];
+                    const value = dateMap[dateStr] || 0;
+                    const level = value === 0 ? 0 : Math.min(Math.ceil((value / maxValue) * 4), 4);
+                    const isInYear = currentDate.getFullYear() === year;
+                    html += `<div class="heatmap-cell" data-level="${isInYear ? level : 0}" title="${dateStr}: ${value} ${goal.unit}" style="opacity: ${isInYear ? 1 : 0.2}"></div>`;
+                    currentDate.setDate(currentDate.getDate() + 1);
+                }
+                html += '</div>';
+            }
+
+            html += '</div></div>';
+            wrapper.innerHTML = html;
+        }
+
+        function renderProgressChart(period) {
+            const goalId = document.getElementById('analyticsGoalSelect').value;
+            const goal = appData.goals.find(g => g.id === goalId);
+            if (!goal) return;
+
+            const ctx = document.getElementById('progressChart').getContext('2d');
+            let labels = [], data = [];
+            const now = new Date();
+
+            if (period === 'week') {
+                for (let i = 6; i >= 0; i--) {
+                    const date = new Date(now);
+                    date.setDate(date.getDate() - i);
+                    const dateStr = date.toISOString().split('T')[0];
+                    labels.push(date.toLocaleDateString('en-US', { weekday: 'short' }));
+                    data.push(appData.logs.filter(l => l.goalId === goalId && l.date === dateStr).reduce((sum, l) => sum + parseFloat(l.value), 0));
+                }
+            } else if (period === 'month') {
+                for (let i = 29; i >= 0; i--) {
+                    const date = new Date(now);
+                    date.setDate(date.getDate() - i);
+                    const dateStr = date.toISOString().split('T')[0];
+                    labels.push(date.getDate());
+                    data.push(appData.logs.filter(l => l.goalId === goalId && l.date === dateStr).reduce((sum, l) => sum + parseFloat(l.value), 0));
+                }
+            } else {
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                for (let m = 0; m < 12; m++) {
+                    labels.push(months[m]);
+                    data.push(appData.logs.filter(l => {
+                        const logDate = new Date(l.date);
+                        return l.goalId === goalId && logDate.getFullYear() === now.getFullYear() && logDate.getMonth() === m;
+                    }).reduce((sum, l) => sum + parseFloat(l.value), 0));
+                }
+            }
+
+            if (progressChart) progressChart.destroy();
+
+            progressChart = new Chart(ctx, {
+                type: 'bar',
+                data: { labels: labels, datasets: [{ label: goal.name, data: data, backgroundColor: goal.color + '80', borderColor: goal.color, borderWidth: 2, borderRadius: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { color: 'rgba(42, 42, 58, 0.5)' }, ticks: { color: '#94a3b8' } }, y: { grid: { color: 'rgba(42, 42, 58, 0.5)' }, ticks: { color: '#94a3b8' }, beginAtZero: true } } }
+            });
+        }
+
+        function changeChartPeriod(period) {
+            document.querySelectorAll('#chartCard .tab-pill').forEach(p => p.classList.toggle('active', p.dataset.period === period));
+            renderProgressChart(period);
+        }
+
+        function renderGoalStats(goal) {
+            const allLogs = appData.logs.filter(l => l.goalId === goal.id);
+            const total = allLogs.reduce((sum, l) => sum + parseFloat(l.value), 0);
+            const count = allLogs.length;
+            const avg = count > 0 ? (total / count).toFixed(1) : 0;
+            
+            let streak = 0;
+            const today = new Date();
+            for (let i = 0; i < 365; i++) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0];
+                if (allLogs.some(l => l.date === dateStr)) streak++;
+                else if (i > 0) break;
+            }
+
+            document.getElementById('goalStats').innerHTML = `<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;"><div style="background: var(--bg-hover); padding: 1rem; border-radius: 8px;"><div style="font-size: 1.5rem; font-weight: 700; color: ${goal.color}">${total}</div><div style="font-size: 0.8rem; color: var(--text-muted)">Total ${goal.unit}</div></div><div style="background: var(--bg-hover); padding: 1rem; border-radius: 8px;"><div style="font-size: 1.5rem; font-weight: 700; color: ${goal.color}">${avg}</div><div style="font-size: 0.8rem; color: var(--text-muted)">Avg per log</div></div><div style="background: var(--bg-hover); padding: 1rem; border-radius: 8px;"><div style="font-size: 1.5rem; font-weight: 700; color: ${goal.color}">${count}</div><div style="font-size: 0.8rem; color: var(--text-muted)">Total logs</div></div><div style="background: var(--bg-hover); padding: 1rem; border-radius: 8px;"><div style="font-size: 1.5rem; font-weight: 700; color: ${goal.color}">🔥 ${streak}</div><div style="font-size: 0.8rem; color: var(--text-muted)">Day streak</div></div></div>`;
+        }
+    </script>
+</body>
+</html>
