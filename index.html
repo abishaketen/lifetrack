@@ -64,6 +64,7 @@
             padding-bottom: calc(70px + var(--safe-bottom));
         }
 
+        /* Header */
         .header {
             background: var(--bg-secondary);
             border-bottom: 1px solid var(--border);
@@ -154,15 +155,24 @@
             background: var(--accent-green);
         }
 
-        .sync-dot.syncing { animation: pulse 1s infinite; }
-        .sync-dot.error { background: var(--accent-red); }
-        .sync-dot.offline { background: var(--text-muted); }
+        .sync-dot.syncing {
+            animation: pulse 1s infinite;
+        }
+
+        .sync-dot.error {
+            background: var(--accent-red);
+        }
+
+        .sync-dot.offline {
+            background: var(--text-muted);
+        }
 
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.3; }
         }
 
+        /* Main Content */
         .main-content {
             flex: 1;
             padding: 1.25rem;
@@ -174,6 +184,7 @@
         .page { display: none; }
         .page.active { display: block; }
 
+        /* Section Headers */
         .section-header {
             display: flex;
             justify-content: space-between;
@@ -190,6 +201,7 @@
             gap: 0.5rem;
         }
 
+        /* Cards */
         .card {
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -213,6 +225,7 @@
             font-weight: 600;
         }
 
+        /* Quick Stats */
         .quick-stats {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -247,6 +260,7 @@
         .stat-value { font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 700; }
         .stat-label { font-size: 0.8rem; color: var(--text-secondary); }
 
+        /* GitHub Style Heatmap */
         .heatmap-container {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
@@ -320,6 +334,7 @@
             border-radius: 2px;
         }
 
+        /* Goal Cards */
         .goals-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -388,6 +403,7 @@
         .goal-current { font-weight: 600; }
         .goal-target { color: var(--text-muted); }
 
+        /* Calendar */
         .calendar-header {
             display: flex;
             justify-content: space-between;
@@ -482,6 +498,7 @@
             background: var(--accent-orange);
         }
 
+        /* Forms */
         .form-group { margin-bottom: 1rem; }
 
         .form-label {
@@ -513,6 +530,7 @@
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
         .form-hint { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem; }
 
+        /* Buttons */
         .btn {
             padding: 0.75rem 1.5rem;
             border-radius: var(--radius);
@@ -551,6 +569,7 @@
         .btn-block { width: 100%; }
         .btn-sm { padding: 0.5rem 1rem; font-size: 0.8rem; }
 
+        /* FAB */
         .fab {
             position: fixed;
             bottom: calc(90px + var(--safe-bottom));
@@ -573,6 +592,7 @@
 
         .fab:active { transform: scale(0.95); }
 
+        /* Bottom Navigation */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -612,6 +632,7 @@
         .nav-icon { font-size: 1.25rem; }
         .nav-label { font-size: 0.65rem; font-weight: 500; }
 
+        /* Modal */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -676,6 +697,7 @@
             cursor: pointer;
         }
 
+        /* Pickers */
         .icon-picker {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
@@ -743,8 +765,10 @@
             color: white;
         }
 
+        /* Chart */
         .chart-container { position: relative; height: 200px; }
 
+        /* Events */
         .event-item {
             display: flex;
             align-items: center;
@@ -774,6 +798,7 @@
         .event-title { font-weight: 600; margin-bottom: 0.25rem; }
         .event-time { font-size: 0.8rem; color: var(--text-muted); }
 
+        /* Empty State */
         .empty-state {
             text-align: center;
             padding: 3rem 1rem;
@@ -783,6 +808,7 @@
         .empty-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
         .empty-text { font-size: 0.9rem; margin-bottom: 1rem; }
 
+        /* Settings */
         .settings-section {
             margin-bottom: 1.5rem;
             padding-bottom: 1.5rem;
@@ -839,6 +865,7 @@
 
         .toggle.active::after { transform: translateX(22px); }
 
+        /* Tab Pills */
         .tab-pills {
             display: flex;
             gap: 0.5rem;
@@ -865,6 +892,7 @@
             color: white;
         }
 
+        /* Log Entry */
         .log-entry {
             display: flex;
             justify-content: space-between;
@@ -890,6 +918,7 @@
             font-weight: 500;
         }
 
+        /* Info Box */
         .info-box {
             background: rgba(59, 130, 246, 0.1);
             border: 1px solid rgba(59, 130, 246, 0.3);
@@ -913,42 +942,24 @@
             line-height: 1.5;
         }
 
-        .success-box {
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            border-radius: var(--radius);
-            padding: 1rem;
-            margin-bottom: 1rem;
-            text-align: center;
+        .info-box ol {
+            margin-left: 1.25rem;
+            margin-top: 0.5rem;
         }
 
-        .import-methods {
-            display: grid;
-            gap: 1rem;
-            margin-bottom: 1rem;
+        .info-box li {
+            margin-bottom: 0.25rem;
         }
 
-        .import-method {
+        .info-box code {
             background: var(--bg-hover);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 1rem;
-        }
-
-        .import-method-title {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .import-method-desc {
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-bottom: 0.75rem;
         }
 
+        /* Responsive */
         @media (min-width: 768px) {
             .quick-stats { grid-template-columns: repeat(4, 1fr); }
             .goals-grid { grid-template-columns: repeat(2, 1fr); }
@@ -981,6 +992,7 @@
 </head>
 <body>
     <div class="app">
+        <!-- Header -->
         <header class="header">
             <div class="header-content">
                 <div class="logo">
@@ -997,6 +1009,7 @@
             </div>
         </header>
 
+        <!-- Main Content -->
         <main class="main-content">
             <!-- Dashboard Page -->
             <div class="page active" id="page-dashboard">
@@ -1186,7 +1199,7 @@
             <form id="goalForm" onsubmit="saveGoal(event)">
                 <div class="form-group">
                     <label class="form-label">Goal Name</label>
-                    <input type="text" class="form-input" id="goalName" placeholder="e.g., Daily Workout" required>
+                    <input type="text" class="form-input" id="goalName" placeholder="e.g., Daily Workout, Reading" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Icon</label>
@@ -1234,7 +1247,7 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">Unit</label>
-                        <input type="text" class="form-input" id="goalUnit" placeholder="e.g., min">
+                        <input type="text" class="form-input" id="goalUnit" placeholder="e.g., min, pages">
                     </div>
                 </div>
                 <div class="form-group">
@@ -1290,50 +1303,67 @@
                 <button class="modal-close" onclick="closeModal('settings')">×</button>
             </div>
 
-            <!-- Import/Export Section -->
+            <!-- Google Sheets Integration -->
             <div class="settings-section">
-                <div class="settings-section-title">💾 Data Management</div>
-
-                <!-- IMPORT METHODS -->
-                <div class="import-methods">
-                    <!-- Method 1: Paste JSON -->
-                    <div class="import-method">
-                        <div class="import-method-title">📋 Method 1: Paste JSON (Easiest for iPhone)</div>
-                        <div class="import-method-desc">Open your JSON file in Files app, select all text, copy, and paste here</div>
-                        <textarea class="form-textarea" id="pasteJsonArea" placeholder="Paste your JSON backup here..." style="min-height: 80px; font-family: monospace; font-size: 0.8rem;"></textarea>
-                        <button class="btn btn-primary btn-sm btn-block" style="margin-top: 0.5rem;" onclick="importFromPaste()">Import from Paste</button>
-                    </div>
-
-                    <!-- Method 2: File Picker -->
-                    <div class="import-method">
-                        <div class="import-method-title">📁 Method 2: File Picker</div>
-                        <div class="import-method-desc">Select JSON file from your device</div>
-                        <label class="btn btn-secondary btn-sm btn-block" style="cursor: pointer;">
-                            Choose File
-                            <input type="file" accept=".json,application/json" id="fileInput" onchange="importFromFile(event)" style="display: none;">
-                        </label>
+                <div class="settings-section-title">☁️ Cloud Backup</div>
+                
+                <div class="info-box">
+                    <div class="info-box-title">📋 How to Setup Google Sheets</div>
+                    <div class="info-box-content">
+                        <ol>
+                            <li>Create a new Google Sheet</li>
+                            <li>Go to <strong>File → Share → Publish to web</strong></li>
+                            <li>Select <strong>"Entire Document"</strong> and <strong>"CSV"</strong></li>
+                            <li>Click <strong>Publish</strong> and copy the link</li>
+                            <li>For write access, use <strong>Google Apps Script</strong> (see below)</li>
+                        </ol>
                     </div>
                 </div>
 
-                <!-- Export -->
                 <div class="settings-item">
                     <div class="settings-info">
-                        <div class="settings-title">Export Data</div>
-                        <div class="settings-desc">Download backup as JSON file</div>
+                        <div class="settings-title">Enable Google Sheets Sync</div>
+                        <div class="settings-desc">Backup data to Google Sheets</div>
+                    </div>
+                    <div class="toggle" id="sheetsToggle" onclick="toggleSheets()"></div>
+                </div>
+
+                <div id="sheetsConfig" style="display: none; margin-top: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">Google Apps Script Web App URL</label>
+                        <input type="url" class="form-input" id="sheetsWebAppUrl" placeholder="https://script.google.com/macros/s/.../exec">
+                        <div class="form-hint">Deploy your Google Apps Script as a Web App</div>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem;">
+                        <button class="btn btn-primary btn-sm" onclick="testSheetsConnection()">Test Connection</button>
+                        <button class="btn btn-secondary btn-sm" onclick="syncToSheets()">Sync Now</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Local Data Management -->
+            <div class="settings-section">
+                <div class="settings-section-title">💾 Local Data</div>
+
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <div class="settings-title">Export Data (JSON)</div>
+                        <div class="settings-desc">Download backup file to your device</div>
                     </div>
                     <button class="btn btn-secondary btn-sm" onclick="exportData()">Export</button>
                 </div>
 
-                <!-- Copy to Clipboard -->
                 <div class="settings-item">
                     <div class="settings-info">
-                        <div class="settings-title">Copy Data to Clipboard</div>
-                        <div class="settings-desc">Copy JSON to paste elsewhere</div>
+                        <div class="settings-title">Import Data</div>
+                        <div class="settings-desc">Restore from backup file</div>
                     </div>
-                    <button class="btn btn-secondary btn-sm" onclick="copyDataToClipboard()">Copy</button>
+                    <label class="btn btn-secondary btn-sm" style="cursor: pointer;">
+                        Import
+                        <input type="file" accept=".json" onchange="importData(event)" style="display: none;">
+                    </label>
                 </div>
 
-                <!-- Clear All -->
                 <div class="settings-item">
                     <div class="settings-info">
                         <div class="settings-title">Clear All Data</div>
@@ -1343,33 +1373,19 @@
                 </div>
             </div>
 
-            <!-- Google Sheets Section -->
+            <!-- Apps Script Template -->
             <div class="settings-section">
-                <div class="settings-section-title">☁️ Google Sheets Backup</div>
-                
-                <div class="settings-item">
-                    <div class="settings-info">
-                        <div class="settings-title">Enable Google Sheets Sync</div>
-                        <div class="settings-desc">Auto-backup to Google Sheets</div>
-                    </div>
-                    <div class="toggle" id="sheetsToggle" onclick="toggleSheets()"></div>
-                </div>
-
-                <div id="sheetsConfig" style="display: none; margin-top: 1rem;">
-                    <div class="form-group">
-                        <label class="form-label">Google Apps Script Web App URL</label>
-                        <input type="url" class="form-input" id="sheetsWebAppUrl" placeholder="https://script.google.com/macros/s/.../exec">
-                    </div>
-                    <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem;">
-                        <button class="btn btn-primary btn-sm" onclick="testSheetsConnection()">Test</button>
-                        <button class="btn btn-secondary btn-sm" onclick="syncToSheets()">Sync Now</button>
-                        <button class="btn btn-secondary btn-sm" onclick="loadFromSheets()">Load from Sheets</button>
+                <div class="settings-section-title">📝 Google Apps Script Template</div>
+                <div class="info-box">
+                    <div class="info-box-content">
+                        <p>Create a new Google Apps Script and paste this code:</p>
+                        <button class="btn btn-secondary btn-sm" style="margin-top: 0.5rem;" onclick="copyAppsScript()">📋 Copy Script Code</button>
                     </div>
                 </div>
             </div>
 
             <div style="text-align: center; color: var(--text-muted); font-size: 0.75rem; margin-top: 1rem;">
-                <p>LifeTrack v2.1 • Data: <span id="dataStats">0 goals, 0 logs</span></p>
+                <p>LifeTrack v2.0 • Data stored locally</p>
             </div>
         </div>
     </div>
@@ -1418,24 +1434,16 @@
             if (saved) {
                 appData = { ...appData, ...JSON.parse(saved) };
             }
-            updateDataStats();
         }
 
         function saveData() {
             localStorage.setItem(DB_KEY, JSON.stringify(appData));
             updateSyncStatus('saving');
-            updateDataStats();
             setTimeout(() => updateSyncStatus('saved'), 500);
             
+            // Auto-sync to Google Sheets if enabled
             if (appData.settings.sheetsEnabled && appData.settings.sheetsWebAppUrl) {
                 syncToSheets();
-            }
-        }
-
-        function updateDataStats() {
-            const el = document.getElementById('dataStats');
-            if (el) {
-                el.textContent = `${appData.goals.length} goals, ${appData.logs.length} logs`;
             }
         }
 
@@ -1459,139 +1467,140 @@
                     break;
                 case 'error':
                     dot.classList.add('error');
-                    text.textContent = 'Error';
+                    text.textContent = 'Sync Error';
+                    break;
+                case 'offline':
+                    dot.classList.add('offline');
+                    text.textContent = 'Offline';
                     break;
             }
         }
 
-        // ==================== IMPORT METHODS ====================
-        
-        // Method 1: Paste JSON directly
-        function importFromPaste() {
-            const textarea = document.getElementById('pasteJsonArea');
-            const jsonText = textarea.value.trim();
-            
-            if (!jsonText) {
-                alert('Please paste your JSON data first');
-                return;
-            }
+        // ==================== GOOGLE SHEETS INTEGRATION ====================
+        const APPS_SCRIPT_TEMPLATE = `
+// Google Apps Script for LifeTrack
+// 1. Create new Google Sheet
+// 2. Go to Extensions > Apps Script
+// 3. Paste this code
+// 4. Deploy > New Deployment > Web App
+// 5. Set "Execute as" = Me, "Who has access" = Anyone
+// 6. Copy the Web App URL to LifeTrack settings
 
-            try {
-                const imported = JSON.parse(jsonText);
-                
-                if (imported.goals !== undefined || imported.logs !== undefined) {
-                    // Merge or replace
-                    const action = confirm('Found valid data!\n\n• Goals: ' + (imported.goals?.length || 0) + '\n• Logs: ' + (imported.logs?.length || 0) + '\n• Events: ' + (imported.events?.length || 0) + '\n\nClick OK to import (replaces current data)\nClick Cancel to abort');
-                    
-                    if (action) {
-                        appData.goals = imported.goals || [];
-                        appData.logs = imported.logs || [];
-                        appData.events = imported.events || [];
-                        if (imported.settings) {
-                            appData.settings = { ...appData.settings, ...imported.settings };
-                        }
-                        saveData();
-                        textarea.value = '';
-                        alert('✅ Import successful!');
-                        location.reload();
-                    }
-                } else {
-                    alert('❌ Invalid format. Make sure you copied the entire JSON file.');
-                }
-            } catch (err) {
-                alert('❌ JSON Parse Error:\n\n' + err.message + '\n\nMake sure you copied the complete JSON text.');
-            }
-        }
+function doGet(e) {
+  return handleRequest(e);
+}
 
-        // Method 2: File picker
-        function importFromFile(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+function doPost(e) {
+  return handleRequest(e);
+}
 
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                try {
-                    const imported = JSON.parse(e.target.result);
-                    
-                    if (imported.goals !== undefined) {
-                        const action = confirm('Import ' + (imported.goals?.length || 0) + ' goals and ' + (imported.logs?.length || 0) + ' logs?');
-                        
-                        if (action) {
-                            appData.goals = imported.goals || [];
-                            appData.logs = imported.logs || [];
-                            appData.events = imported.events || [];
-                            if (imported.settings) {
-                                appData.settings = { ...appData.settings, ...imported.settings };
-                            }
-                            saveData();
-                            alert('✅ Import successful!');
-                            location.reload();
-                        }
-                    } else {
-                        alert('❌ Invalid backup file');
-                    }
-                } catch (err) {
-                    alert('❌ Error: ' + err.message);
-                }
-            };
-            reader.readAsText(file);
-        }
+function handleRequest(e) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet();
+  const action = e.parameter.action;
+  
+  try {
+    if (action === 'save') {
+      const data = JSON.parse(e.parameter.data);
+      saveData(sheet, data);
+      return ContentService.createTextOutput(JSON.stringify({success: true}))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    if (action === 'load') {
+      const data = loadData(sheet);
+      return ContentService.createTextOutput(JSON.stringify({success: true, data: data}))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    if (action === 'test') {
+      return ContentService.createTextOutput(JSON.stringify({success: true, message: 'Connected!'}))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+  } catch(error) {
+    return ContentService.createTextOutput(JSON.stringify({success: false, error: error.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
 
-        function exportData() {
-            const dataStr = JSON.stringify(appData, null, 2);
-            const blob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `lifetrack_backup_${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
+function saveData(sheet, data) {
+  // Goals Sheet
+  let goalsSheet = sheet.getSheetByName('Goals') || sheet.insertSheet('Goals');
+  goalsSheet.clear();
+  if (data.goals.length > 0) {
+    goalsSheet.getRange(1, 1, 1, 8).setValues([['ID', 'Name', 'Icon', 'Color', 'Timeframe', 'Target', 'Unit', 'Visualization']]);
+    const goalsData = data.goals.map(g => [g.id, g.name, g.icon, g.color, g.timeframe, g.target, g.unit, g.visualization]);
+    goalsSheet.getRange(2, 1, goalsData.length, 8).setValues(goalsData);
+  }
+  
+  // Logs Sheet
+  let logsSheet = sheet.getSheetByName('Logs') || sheet.insertSheet('Logs');
+  logsSheet.clear();
+  if (data.logs.length > 0) {
+    logsSheet.getRange(1, 1, 1, 6).setValues([['ID', 'GoalID', 'Value', 'Date', 'Time', 'Notes']]);
+    const logsData = data.logs.map(l => [l.id, l.goalId, l.value, l.date, l.time, l.notes]);
+    logsSheet.getRange(2, 1, logsData.length, 6).setValues(logsData);
+  }
+  
+  // Events Sheet
+  let eventsSheet = sheet.getSheetByName('Events') || sheet.insertSheet('Events');
+  eventsSheet.clear();
+  if (data.events.length > 0) {
+    eventsSheet.getRange(1, 1, 1, 5).setValues([['ID', 'Title', 'Date', 'Time', 'Description']]);
+    const eventsData = data.events.map(e => [e.id, e.title, e.date, e.time, e.description]);
+    eventsSheet.getRange(2, 1, eventsData.length, 5).setValues(eventsData);
+  }
+}
 
-        function copyDataToClipboard() {
-            const dataStr = JSON.stringify(appData, null, 2);
-            
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(dataStr).then(() => {
-                    alert('✅ Data copied to clipboard!\n\nYou can paste this anywhere to backup.');
-                }).catch(() => {
-                    fallbackCopy(dataStr);
-                });
-            } else {
-                fallbackCopy(dataStr);
-            }
-        }
+function loadData(sheet) {
+  const data = { goals: [], logs: [], events: [] };
+  
+  // Load Goals
+  const goalsSheet = sheet.getSheetByName('Goals');
+  if (goalsSheet && goalsSheet.getLastRow() > 1) {
+    const goalsData = goalsSheet.getRange(2, 1, goalsSheet.getLastRow() - 1, 8).getValues();
+    data.goals = goalsData.map(row => ({
+      id: row[0], name: row[1], icon: row[2], color: row[3],
+      timeframe: row[4], target: row[5], unit: row[6], visualization: row[7]
+    }));
+  }
+  
+  // Load Logs
+  const logsSheet = sheet.getSheetByName('Logs');
+  if (logsSheet && logsSheet.getLastRow() > 1) {
+    const logsData = logsSheet.getRange(2, 1, logsSheet.getLastRow() - 1, 6).getValues();
+    data.logs = logsData.map(row => ({
+      id: row[0], goalId: row[1], value: row[2], date: row[3], time: row[4], notes: row[5]
+    }));
+  }
+  
+  // Load Events
+  const eventsSheet = sheet.getSheetByName('Events');
+  if (eventsSheet && eventsSheet.getLastRow() > 1) {
+    const eventsData = eventsSheet.getRange(2, 1, eventsSheet.getLastRow() - 1, 5).getValues();
+    data.events = eventsData.map(row => ({
+      id: row[0], title: row[1], date: row[2], time: row[3], description: row[4]
+    }));
+  }
+  
+  return data;
+}
+`;
 
-        function fallbackCopy(text) {
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            textarea.style.position = 'fixed';
-            textarea.style.opacity = '0';
-            document.body.appendChild(textarea);
-            textarea.focus();
-            textarea.select();
-            try {
+        function copyAppsScript() {
+            navigator.clipboard.writeText(APPS_SCRIPT_TEMPLATE.trim()).then(() => {
+                alert('✅ Script copied! Paste it into Google Apps Script.');
+            }).catch(() => {
+                // Fallback for iOS
+                const textarea = document.createElement('textarea');
+                textarea.value = APPS_SCRIPT_TEMPLATE.trim();
+                document.body.appendChild(textarea);
+                textarea.select();
                 document.execCommand('copy');
-                alert('✅ Data copied to clipboard!');
-            } catch (err) {
-                alert('❌ Copy failed. Please manually select and copy.');
-            }
-            document.body.removeChild(textarea);
+                document.body.removeChild(textarea);
+                alert('✅ Script copied! Paste it into Google Apps Script.');
+            });
         }
 
-        function clearAllData() {
-            if (confirm('Delete ALL data permanently?')) {
-                if (confirm('This cannot be undone. Continue?')) {
-                    appData = { goals: [], logs: [], events: [], settings: appData.settings };
-                    saveData();
-                    location.reload();
-                }
-            }
-        }
-
-        // ==================== GOOGLE SHEETS ====================
         function toggleSheets() {
             const toggle = document.getElementById('sheetsToggle');
             const config = document.getElementById('sheetsConfig');
@@ -1615,30 +1624,44 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    alert('✅ Connected!');
+                    alert('✅ Connection successful!');
                     appData.settings.sheetsWebAppUrl = url;
                     saveData();
+                    updateSyncStatus('saved');
                 } else {
-                    alert('❌ Failed: ' + result.error);
+                    alert('❌ Connection failed: ' + result.error);
                     updateSyncStatus('error');
                 }
             } catch (error) {
-                alert('❌ Failed: ' + error.message);
+                alert('❌ Connection failed: ' + error.message);
                 updateSyncStatus('error');
             }
         }
 
         async function syncToSheets() {
-            if (!appData.settings.sheetsEnabled || !appData.settings.sheetsWebAppUrl) return;
+            if (!appData.settings.sheetsEnabled || !appData.settings.sheetsWebAppUrl) {
+                return;
+            }
 
             updateSyncStatus('syncing');
 
             try {
-                const dataToSync = { goals: appData.goals, logs: appData.logs, events: appData.events };
+                const dataToSync = {
+                    goals: appData.goals,
+                    logs: appData.logs,
+                    events: appData.events
+                };
+
                 const url = `${appData.settings.sheetsWebAppUrl}?action=save&data=${encodeURIComponent(JSON.stringify(dataToSync))}`;
                 const response = await fetch(url);
                 const result = await response.json();
-                updateSyncStatus(result.success ? 'saved' : 'error');
+
+                if (result.success) {
+                    updateSyncStatus('saved');
+                } else {
+                    console.error('Sync failed:', result.error);
+                    updateSyncStatus('error');
+                }
             } catch (error) {
                 console.error('Sync error:', error);
                 updateSyncStatus('error');
@@ -1646,12 +1669,7 @@
         }
 
         async function loadFromSheets() {
-            if (!appData.settings.sheetsWebAppUrl) {
-                alert('Please enter and test the Web App URL first');
-                return;
-            }
-
-            updateSyncStatus('syncing');
+            if (!appData.settings.sheetsWebAppUrl) return;
 
             try {
                 const response = await fetch(`${appData.settings.sheetsWebAppUrl}?action=load`);
@@ -1662,15 +1680,13 @@
                     appData.logs = result.data.logs || [];
                     appData.events = result.data.events || [];
                     localStorage.setItem(DB_KEY, JSON.stringify(appData));
-                    alert('✅ Loaded from Google Sheets!');
-                    location.reload();
-                } else {
-                    alert('❌ Failed to load');
-                    updateSyncStatus('error');
+                    renderDashboard();
+                    renderCalendar();
+                    renderEvents();
+                    alert('✅ Data loaded from Google Sheets!');
                 }
             } catch (error) {
-                alert('❌ Error: ' + error.message);
-                updateSyncStatus('error');
+                console.error('Load error:', error);
             }
         }
 
@@ -1688,6 +1704,7 @@
             populateGoalSelects();
             populateYearSelect();
             
+            // Initialize settings UI
             if (appData.settings.sheetsEnabled) {
                 document.getElementById('sheetsToggle').classList.add('active');
                 document.getElementById('sheetsConfig').style.display = 'block';
@@ -1706,6 +1723,7 @@
             });
         }
 
+        // ==================== NAVIGATION ====================
         function initNavigation() {
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.addEventListener('click', () => {
@@ -1724,6 +1742,7 @@
             if (page === 'analytics') initAnalytics();
         }
 
+        // ==================== MODALS ====================
         function initModals() {
             document.querySelectorAll('.modal-overlay').forEach(overlay => {
                 overlay.addEventListener('click', (e) => {
@@ -1744,6 +1763,7 @@
             document.getElementById(`modal-${type}`).classList.remove('active');
         }
 
+        // ==================== PICKERS ====================
         function initPickers() {
             document.querySelectorAll('.icon-option').forEach(opt => {
                 opt.addEventListener('click', () => {
@@ -1897,7 +1917,13 @@
             if (filter !== 'all') goals = goals.filter(g => g.timeframe === filter);
 
             if (goals.length === 0) {
-                grid.innerHTML = `<div class="empty-state" style="grid-column: 1/-1"><div class="empty-icon">🎯</div><p class="empty-text">No goals yet</p><button class="btn btn-primary btn-sm" onclick="openModal('goal')">Create Goal</button></div>`;
+                grid.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1/-1">
+                        <div class="empty-icon">🎯</div>
+                        <p class="empty-text">No goals yet. Create your first goal!</p>
+                        <button class="btn btn-primary btn-sm" onclick="openModal('goal')">Create Goal</button>
+                    </div>
+                `;
                 return;
             }
 
@@ -1993,13 +2019,23 @@
             const topGoals = appData.goals.slice(0, 4);
             
             if (topGoals.length === 0) {
-                stats.innerHTML = `<div class="stat-card" data-color="green" style="grid-column: 1/-1; text-align: center; padding: 2rem;"><p style="color: var(--text-muted);">Add goals to see stats</p></div>`;
+                stats.innerHTML = `
+                    <div class="stat-card" data-color="green" style="grid-column: 1/-1; text-align: center; padding: 2rem;">
+                        <p style="color: var(--text-muted);">Add goals to see stats</p>
+                    </div>
+                `;
                 return;
             }
 
             stats.innerHTML = topGoals.map((goal, i) => {
                 const progress = getGoalProgress(goal);
-                return `<div class="stat-card" data-color="${colors[i % colors.length]}"><div class="stat-icon">${goal.icon}</div><div class="stat-value">${progress.current}</div><div class="stat-label">${goal.name} (${goal.unit || 'units'})</div></div>`;
+                return `
+                    <div class="stat-card" data-color="${colors[i % colors.length]}">
+                        <div class="stat-icon">${goal.icon}</div>
+                        <div class="stat-value">${progress.current}</div>
+                        <div class="stat-label">${goal.name} (${goal.unit || 'units'})</div>
+                    </div>
+                `;
             }).join('');
         }
 
@@ -2007,7 +2043,13 @@
             const grid = document.getElementById('goalsGrid');
             
             if (appData.goals.length === 0) {
-                grid.innerHTML = `<div class="empty-state" style="grid-column: 1/-1"><div class="empty-icon">🎯</div><p class="empty-text">No goals yet</p><button class="btn btn-primary btn-sm" onclick="openModal('goal')">Create Goal</button></div>`;
+                grid.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1/-1">
+                        <div class="empty-icon">🎯</div>
+                        <p class="empty-text">No goals yet</p>
+                        <button class="btn btn-primary btn-sm" onclick="openModal('goal')">Create Goal</button>
+                    </div>
+                `;
                 return;
             }
 
@@ -2029,7 +2071,15 @@
             container.innerHTML = todayLogs.map(log => {
                 const goal = appData.goals.find(g => g.id === log.goalId);
                 if (!goal) return '';
-                return `<div class="log-entry"><div class="log-entry-info"><span class="log-entry-icon">${goal.icon}</span><span class="log-entry-name">${goal.name}</span></div><span class="log-entry-value">${log.value} ${goal.unit}</span></div>`;
+                return `
+                    <div class="log-entry">
+                        <div class="log-entry-info">
+                            <span class="log-entry-icon">${goal.icon}</span>
+                            <span class="log-entry-name">${goal.name}</span>
+                        </div>
+                        <span class="log-entry-value">${log.value} ${goal.unit}</span>
+                    </div>
+                `;
             }).join('');
         }
 
@@ -2098,7 +2148,9 @@
         function showDayDetail(dateStr) {
             selectedDate = dateStr;
             const date = new Date(dateStr + 'T00:00:00');
-            document.getElementById('dayModalTitle').textContent = date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+            document.getElementById('dayModalTitle').textContent = date.toLocaleDateString('en-US', {
+                weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'
+            });
 
             const dayLogs = appData.logs.filter(l => l.date === dateStr);
             const dayEvents = appData.events.filter(e => e.date === dateStr);
@@ -2107,7 +2159,14 @@
 
             if (dayEvents.length > 0) {
                 html += '<h4 style="margin-bottom: 0.75rem; font-size: 0.9rem;">📌 Events</h4>';
-                html += dayEvents.map(event => `<div class="event-item" style="margin-bottom: 0.5rem;"><div class="event-info"><div class="event-title">${event.title}</div><div class="event-time">${event.time || 'All day'}</div></div></div>`).join('');
+                html += dayEvents.map(event => `
+                    <div class="event-item" style="margin-bottom: 0.5rem;">
+                        <div class="event-info">
+                            <div class="event-title">${event.title}</div>
+                            <div class="event-time">${event.time || 'All day'}</div>
+                        </div>
+                    </div>
+                `).join('');
             }
 
             if (dayLogs.length > 0) {
@@ -2115,7 +2174,15 @@
                 html += dayLogs.map(log => {
                     const goal = appData.goals.find(g => g.id === log.goalId);
                     if (!goal) return '';
-                    return `<div class="log-entry"><div class="log-entry-info"><span class="log-entry-icon">${goal.icon}</span><span class="log-entry-name">${goal.name}</span></div><span class="log-entry-value">${log.value} ${goal.unit}</span></div>`;
+                    return `
+                        <div class="log-entry">
+                            <div class="log-entry-info">
+                                <span class="log-entry-icon">${goal.icon}</span>
+                                <span class="log-entry-name">${goal.name}</span>
+                            </div>
+                            <span class="log-entry-value">${log.value} ${goal.unit}</span>
+                        </div>
+                    `;
                 }).join('');
             }
 
@@ -2160,7 +2227,10 @@
             const container = document.getElementById('eventsList');
             const today = new Date().toISOString().split('T')[0];
             
-            const upcomingEvents = appData.events.filter(e => e.date >= today).sort((a, b) => new Date(a.date) - new Date(b.date)).slice(0, 5);
+            const upcomingEvents = appData.events
+                .filter(e => e.date >= today)
+                .sort((a, b) => new Date(a.date) - new Date(b.date))
+                .slice(0, 5);
 
             if (upcomingEvents.length === 0) {
                 container.innerHTML = `<div class="empty-state"><div class="empty-icon">📅</div><p class="empty-text">No upcoming events</p></div>`;
@@ -2169,7 +2239,18 @@
 
             container.innerHTML = upcomingEvents.map(event => {
                 const date = new Date(event.date + 'T00:00:00');
-                return `<div class="event-item"><div class="event-date"><div class="event-date-day">${date.getDate()}</div><div class="event-date-month">${date.toLocaleDateString('en-US', { month: 'short' })}</div></div><div class="event-info"><div class="event-title">${event.title}</div><div class="event-time">${event.time || 'All day'}</div></div></div>`;
+                return `
+                    <div class="event-item">
+                        <div class="event-date">
+                            <div class="event-date-day">${date.getDate()}</div>
+                            <div class="event-date-month">${date.toLocaleDateString('en-US', { month: 'short' })}</div>
+                        </div>
+                        <div class="event-info">
+                            <div class="event-title">${event.title}</div>
+                            <div class="event-time">${event.time || 'All day'}</div>
+                        </div>
+                    </div>
+                `;
             }).join('');
         }
 
@@ -2207,8 +2288,11 @@
             document.getElementById('chartCard').style.display = goal.visualization === 'chart' ? 'block' : 'none';
             document.getElementById('statsCard').style.display = 'block';
 
-            if (goal.visualization === 'heatmap') renderHeatmap();
-            else renderProgressChart('week');
+            if (goal.visualization === 'heatmap') {
+                renderHeatmap();
+            } else {
+                renderProgressChart('week');
+            }
 
             renderGoalStats(goal);
         }
@@ -2237,7 +2321,20 @@
             const maxValue = Math.max(...Object.values(dateMap), goal.target);
             const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
             
-            let html = `<div class="heatmap-months">${months.map(m => `<span class="heatmap-month">${m}</span>`).join('')}</div><div class="heatmap-content"><div class="heatmap-days"><div class="heatmap-day-label"></div><div class="heatmap-day-label">Mon</div><div class="heatmap-day-label"></div><div class="heatmap-day-label">Wed</div><div class="heatmap-day-label"></div><div class="heatmap-day-label">Fri</div><div class="heatmap-day-label"></div></div><div class="heatmap-grid">`;
+            let html = `
+                <div class="heatmap-months">${months.map(m => `<span class="heatmap-month">${m}</span>`).join('')}</div>
+                <div class="heatmap-content">
+                    <div class="heatmap-days">
+                        <div class="heatmap-day-label"></div>
+                        <div class="heatmap-day-label">Mon</div>
+                        <div class="heatmap-day-label"></div>
+                        <div class="heatmap-day-label">Wed</div>
+                        <div class="heatmap-day-label"></div>
+                        <div class="heatmap-day-label">Fri</div>
+                        <div class="heatmap-day-label"></div>
+                    </div>
+                    <div class="heatmap-grid">
+            `;
 
             let currentDate = new Date(startDate);
             while (currentDate.getDay() !== 0) currentDate.setDate(currentDate.getDate() - 1);
@@ -2249,6 +2346,7 @@
                     const value = dateMap[dateStr] || 0;
                     const level = value === 0 ? 0 : Math.min(Math.ceil((value / maxValue) * 4), 4);
                     const isInYear = currentDate.getFullYear() === year;
+                    
                     html += `<div class="heatmap-cell" data-level="${isInYear ? level : 0}" title="${dateStr}: ${value} ${goal.unit}" style="opacity: ${isInYear ? 1 : 0.2}"></div>`;
                     currentDate.setDate(currentDate.getDate() + 1);
                 }
@@ -2299,8 +2397,19 @@
 
             progressChart = new Chart(ctx, {
                 type: 'bar',
-                data: { labels: labels, datasets: [{ label: goal.name, data: data, backgroundColor: goal.color + '80', borderColor: goal.color, borderWidth: 2, borderRadius: 4 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { color: 'rgba(42, 42, 58, 0.5)' }, ticks: { color: '#94a3b8' } }, y: { grid: { color: 'rgba(42, 42, 58, 0.5)' }, ticks: { color: '#94a3b8' }, beginAtZero: true } } }
+                data: {
+                    labels: labels,
+                    datasets: [{ label: goal.name, data: data, backgroundColor: goal.color + '80', borderColor: goal.color, borderWidth: 2, borderRadius: 4 }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { color: 'rgba(42, 42, 58, 0.5)' }, ticks: { color: '#94a3b8' } },
+                        y: { grid: { color: 'rgba(42, 42, 58, 0.5)' }, ticks: { color: '#94a3b8' }, beginAtZero: true }
+                    }
+                }
             });
         }
 
@@ -2325,7 +2434,73 @@
                 else if (i > 0) break;
             }
 
-            document.getElementById('goalStats').innerHTML = `<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;"><div style="background: var(--bg-hover); padding: 1rem; border-radius: 8px;"><div style="font-size: 1.5rem; font-weight: 700; color: ${goal.color}">${total}</div><div style="font-size: 0.8rem; color: var(--text-muted)">Total ${goal.unit}</div></div><div style="background: var(--bg-hover); padding: 1rem; border-radius: 8px;"><div style="font-size: 1.5rem; font-weight: 700; color: ${goal.color}">${avg}</div><div style="font-size: 0.8rem; color: var(--text-muted)">Avg per log</div></div><div style="background: var(--bg-hover); padding: 1rem; border-radius: 8px;"><div style="font-size: 1.5rem; font-weight: 700; color: ${goal.color}">${count}</div><div style="font-size: 0.8rem; color: var(--text-muted)">Total logs</div></div><div style="background: var(--bg-hover); padding: 1rem; border-radius: 8px;"><div style="font-size: 1.5rem; font-weight: 700; color: ${goal.color}">🔥 ${streak}</div><div style="font-size: 0.8rem; color: var(--text-muted)">Day streak</div></div></div>`;
+            document.getElementById('goalStats').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                    <div style="background: var(--bg-hover); padding: 1rem; border-radius: 8px;">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: ${goal.color}">${total}</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted)">Total ${goal.unit}</div>
+                    </div>
+                    <div style="background: var(--bg-hover); padding: 1rem; border-radius: 8px;">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: ${goal.color}">${avg}</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted)">Avg per log</div>
+                    </div>
+                    <div style="background: var(--bg-hover); padding: 1rem; border-radius: 8px;">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: ${goal.color}">${count}</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted)">Total logs</div>
+                    </div>
+                    <div style="background: var(--bg-hover); padding: 1rem; border-radius: 8px;">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: ${goal.color}">🔥 ${streak}</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted)">Day streak</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ==================== DATA MANAGEMENT ====================
+        function exportData() {
+            const dataStr = JSON.stringify(appData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `lifetrack_backup_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (imported.goals !== undefined) {
+                        appData = { ...appData, ...imported };
+                        saveData();
+                        alert('✅ Data imported successfully!');
+                        location.reload();
+                    } else {
+                        alert('❌ Invalid backup file');
+                    }
+                } catch (err) {
+                    alert('❌ Error: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function clearAllData() {
+            if (confirm('Delete ALL data permanently?')) {
+                if (confirm('This cannot be undone. Continue?')) {
+                    appData = { goals: [], logs: [], events: [], settings: appData.settings };
+                    saveData();
+                    location.reload();
+                }
+            }
         }
     </script>
 </body>
